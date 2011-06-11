@@ -11,4 +11,10 @@ public class IntLiteral extends Expr
     {
         this.t = t;
     }
+
+    @Override
+    public String toString()
+    {
+        return t.getText();
+    }
 }
