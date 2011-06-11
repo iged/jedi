@@ -1,4 +1,14 @@
 grammar Jedi;
+options {output=AST;}
+tokens {PROG; CLASS;}
+
+@lexer::header {
+package br.ufpb.iged.jedi;
+}
+
+@header {
+package br.ufpb.iged.jedi;
+}
 
 // tokens
 ID  :	('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'0'..'9'|'_')*
@@ -48,8 +58,33 @@ UNICODE_ESC
     :   '\\' 'u' HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT
     ;
 
-// regras
+// Regras da Gramatica
+prog	:	class+ -> ^(PROG<Program> class+)  ;
 
+class	:	'class' ID '{' classItem* '}' -> ^(CLASS<Class>[$ID] classItem*);
+
+classItem
+	:	field
+	|	method
+	;
+	
+field	:	type ID ';' ;  
+
+type	:	'int' ;
+
+method	:	 type ID '(' (param (',' param)*)? ')'
+		 '{' stat* '}' ;
+
+param	:	 type ID ;
+
+cond	:	'(' expr ')' ;
+
+stat    : 	expr
+	|	'{' stat* '}'
+	|	'if' cond stat ('else' stat)?
+	|	'while' cond stat
+	|	'for' '(' ID '=' expr ('to' | 'downto') expr ')' stat
+	;
 // Expressoes
 //
 // Niveis precedencia:
@@ -66,11 +101,14 @@ addExpr	:	multExpr (('+' | '-') multExpr)* ;
 
 multExpr:	primary (('*' | '/') primary)* ; 
 
-primary	:	INT
-	|	ID
-	|	CHAR
-	|	STRING
-	|	'true'
-	|	'false'
+primary	:	INT -> INT<IntLiteral>
+	|	ID -> ID<Var>
+	|	ID '=' expr
+	|	'(' expr ')'
+	|	CHAR -> CHAR<CharLiteral>
+	|	STRING -> STRING<StringLiteral>
+	|	'true' -> 'true'<BooleanLiteral>
+	|	'false' -> 'false'<BooleanLiteral>
+	|	'null'
 	;
 	
