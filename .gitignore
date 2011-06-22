@@ -1,0 +1,6 @@
+
+# ignorar arquivos Java produzidos pelo ANTLR
+antlr/output/*
+src/br/ufpb/iged/jedi/JediParser.java
+src/br/ufpb/iged/jedi/JediLexer.java
+
