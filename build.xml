@@ -7,4 +7,10 @@
 			<arg path="antlr/Jedi.g"/>
 		</java>
 	</target>
+
+	<target name="clear">
+		<delete file="./src/br/ufpb/iged/jedi/Jedi.tokens"/>
+		<delete file="./src/br/ufpb/iged/jedi/JediLexer.java"/>
+		<delete file="./src/br/ufpb/iged/jedi/JediParser.java"/>
+	</target>
 </project> 
