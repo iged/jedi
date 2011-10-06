@@ -103,7 +103,7 @@ multExpr:	primary (('*' | '/') primary)* ;
 
 primary	:	INT -> INT<IntLiteral>
 	|	ID -> ID<Var>
-	|	ID '=' expr
+//	|	ID '=' expr
 	|	'(' expr ')'
 	|	CHAR -> CHAR<CharLiteral>
 	|	STRING -> STRING<StringLiteral>

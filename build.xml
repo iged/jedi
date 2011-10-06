@@ -1,12 +1,10 @@
-<project name="Jedi" default="antlr" basedir="."> 
+<project name="Jedi" default="antlr" basedir=".">
 	<target name="antlr">
-		<echo message="Copiando arquivo do antlr"/>
-		<copy file="arquivoAntlr" todir="./src/br/ufpb/iged/jedi"/>
+		<java classname="org.antlr.Tool" fork="true" failonerror="true">
+			<arg value="-verbose"/>
+			<arg value="-o"/>
+			<arg path="."/>
+			<arg path="antlr/Jedi.g"/>
+		</java>
 	</target>
-	<target name="compila">
-		<echo message="Criando pasta classes "/>
-		<mkdir dir="classes"/>
-		<echo message="Compilando e movendo arquivos para .classes"/>
-		<javac srcdir="./src/br/ufpb/iged/jedi" destdir="./classes"/>
-	</target>
-<project>
+</project> 
