@@ -3,7 +3,7 @@
 		<java classname="org.antlr.Tool" fork="true" failonerror="true">
 			<arg value="-verbose"/>
 			<arg value="-o"/>
-			<arg path="."/>
+			<arg path="./src/br/ufpb/iged/jedi"/>
 			<arg path="antlr/Jedi.g"/>
 		</java>
 	</target>
