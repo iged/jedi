@@ -1,5 +1,8 @@
 <project name="Jedi" default="antlr" basedir=".">
-	<target name="antlr">
+	<property name="src.dir" value="./src/br/ufpb/iged/jedi"/>
+	<property name="build.dir" value="classes"/>
+
+	<target name="antlr" description="Gera arquivos a partir da gramatica">
 		<java classname="org.antlr.Tool" fork="true" failonerror="true">
 			<arg value="-verbose"/>
 			<arg value="-o"/>
@@ -8,9 +11,20 @@
 		</java>
 	</target>
 
+	<target name="compile" depends="antlr" description="Compila os .java">
+		<mkdir dir="${build.dir}"/>
+		<javac srcdir="${src.dir}" destdir="./classes">
+			<classpath>
+				<pathelement location="./classes"/>
+			</classpath>
+		</javac>
+
+	</target>
+
 	<target name="clear">
 		<delete file="./src/br/ufpb/iged/jedi/Jedi.tokens"/>
 		<delete file="./src/br/ufpb/iged/jedi/JediLexer.java"/>
 		<delete file="./src/br/ufpb/iged/jedi/JediParser.java"/>
+		<delete dir="./classes"/>
 	</target>
 </project> 
