@@ -1,12 +1,25 @@
-<project name="Jedi" default="antlr" basedir="."> 
-	<target name="antlr">
-		<echo message="Copiando arquivo do antlr"/>
-		<copy file="arquivoAntlr" todir="./src/br/ufpb/iged/jedi"/>
+<project name="Jedi" default="antlr" basedir=".">
+	<property name="src.dir" value="./src/br/ufpb/iged/jedi"/>
+	<property name="classes" location="classes"/>
+
+	<target name="antlr" description="Gera arquivos a partir da gramatica">
+		<java classname="org.antlr.Tool" fork="true" failonerror="true">
+			<arg value="-verbose"/>
+			<arg value="-o"/>
+			<arg path="./src/br/ufpb/iged/jedi"/>
+			<arg path="antlr/Jedi.g"/>
+		</java>
 	</target>
-	<target name="compila">
-		<echo message="Criando pasta classes "/>
+
+	<target name="compile" depends="antlr" description="Compila os .java">
 		<mkdir dir="classes"/>
-		<echo message="Compilando e movendo arquivos para .classes"/>
-		<javac srcdir="./src/br/ufpb/iged/jedi" destdir="./classes"/>
+		<javac srcdir="./src/br/ufpb/iged/jedi" destdir="${classes}"/>
 	</target>
-<project>
+
+	<target name="clear">
+		<delete file="./src/br/ufpb/iged/jedi/Jedi.tokens"/>
+		<delete file="./src/br/ufpb/iged/jedi/JediLexer.java"/>
+		<delete file="./src/br/ufpb/iged/jedi/JediParser.java"/>
+		<delete dir="./classes"/>
+	</target>
+</project> 
