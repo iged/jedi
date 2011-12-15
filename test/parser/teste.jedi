@@ -1,4 +1,11 @@
 class Teste
 {
    int x;
+
+   int f() { null; }
+
+   int g(int y)
+   {
+        y = 2;
+   }
 }

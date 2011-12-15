@@ -17,10 +17,9 @@
 	<javac classpath="${antlr.jar};${classes}" srcdir="${src.dir}" destdir="${classes}"/>
     </target>
 
-    <target name="test" depends="compile" description="Executa o
-                                                       teste">
+    <target name="test" depends="compile" description="Executa o teste">
         <java classpath="${antlr.jar};${classes}"
-              classname="ParseTest" fork="true">
+              classname="ParserTest" fork="true">
         </java>
     </target>
     

@@ -1,6 +1,6 @@
 grammar Jedi;
 options {output=AST;}
-tokens {PROG; FIELDDEC; PARAMDEC; METHOD;}
+tokens {PROG; FIELD; PARAM; METHOD;}
 
 @lexer::header {
 package br.ufpb.iged.jedi;
@@ -59,23 +59,23 @@ UNICODE_ESC
     ;
 
 // Regras da Gramatica
-prog	:	klass+ -> ^(PROG klass+)  ;
+prog	 :	classDec+ -> ^(PROG classDec+)  ;
 
-klass	:	'klass' ID '{' classItem* '}' ; 
+classDec :	'class' ID '{' classItem* '}' ; 
 
 classItem
 	:	field
 	|	method
 	;
 	
-field	:	type ID ';' -> ^(FIELDDEC type ID) ;
+field	:	type ID ';' -> ^(FIELD type ID) ;
 
 type	:	'int' ;
 
 method	:	 type ID '(' (param (',' param)*)? ')'
-		 '{' stat* '}' -> ^(METHOD type ID param+ stat*) ;
+		 '{' stat* '}' -> ^(METHOD type ID param* stat*) ;
 
-param	:	 type ID  -> ^(PARAMDEC type ID) ; 
+param	:	 type ID  -> ^(PARAM type ID) ; 
 
 
 // Comandos
@@ -85,11 +85,12 @@ param	:	 type ID  -> ^(PARAMDEC type ID) ;
 // - Comando condicional (if-then-else)
 // - for e while
 
-stat    : 	expr
+stat    : 	expr ';'!
 	|	'{' stat* '}'
 	|	'if' cond stat ('else' stat)?
 	|	'while' cond stat
 	|	'for' '(' ID '=' expr ('to' | 'downto') expr ')' stat
+    | ';'!                     // comando vazio 
 	;
 
 
