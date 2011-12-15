@@ -1,0 +1,33 @@
+<project name="JediParserTest" default="compile" basedir=".">
+    <property name="src.dir" value="${basedir}"/>
+    <property name="classes" location="${basedir}/classes"/>
+    <property name="antlr.jar" value="../../antlr-3.3-complete.jar"/>
+
+    <target name="antlr" description="Gera analisador sintático a partir da gramática">
+	<java classpath="${antlr.jar};${src.dir}" jar="${antlr.jar}" fork="true" failonerror="true">
+	    <arg value="-verbose"/>
+            <arg value="-o"/>
+            <arg value="${basedir}"/>
+	    <arg path="../../antlr/Jedi.g"/>
+	</java>
+    </target>
+
+    <target name="compile" depends="antlr" description="Compila o teste">
+	<mkdir dir="${classes}"/>
+	<javac classpath="${antlr.jar};${classes}" srcdir="${src.dir}" destdir="${classes}"/>
+    </target>
+
+    <target name="test" depends="compile" description="Executa o
+                                                       teste">
+        <java classpath="${antlr.jar};${classes}"
+              classname="ParseTest" fork="true">
+        </java>
+    </target>
+    
+    <target name="clear">
+        <delete file="${basedir}/Jedi.tokens"/>
+	<delete file="${basedir}/JediParser.java"/>
+        <delete file="${basedir}/JediLexer.java"/>
+        <delete dir="${classes}"/>
+    </target>
+</project> 
