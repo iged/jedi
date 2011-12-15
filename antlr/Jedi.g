@@ -1,6 +1,6 @@
 grammar Jedi;
 options {output=AST;}
-tokens {PROG; CLASS;}
+tokens {PROG; FIELDDEC; PARAMDEC; METHOD;}
 
 @lexer::header {
 package br.ufpb.iged.jedi;
@@ -59,25 +59,31 @@ UNICODE_ESC
     ;
 
 // Regras da Gramatica
-prog	:	class+ -> ^(PROG<Program> class+)  ;
+prog	:	klass+ -> ^(PROG klass+)  ;
 
-class	:	'class' ID '{' classItem* '}' -> ^(CLASS<Class>[$ID] classItem*);
+klass	:	'klass' ID '{' classItem* '}' ; 
 
 classItem
 	:	field
 	|	method
 	;
 	
-field	:	type ID ';' ;  
+field	:	type ID ';' -> ^(FIELDDEC type ID) ;
 
 type	:	'int' ;
 
 method	:	 type ID '(' (param (',' param)*)? ')'
-		 '{' stat* '}' ;
+		 '{' stat* '}' -> ^(METHOD type ID param+ stat*) ;
 
-param	:	 type ID ;
+param	:	 type ID  -> ^(PARAMDEC type ID) ; 
 
-cond	:	'(' expr ')' ;
+
+// Comandos
+//
+// - Expressao
+// - Bloco de comandos entre chaves
+// - Comando condicional (if-then-else)
+// - for e while
 
 stat    : 	expr
 	|	'{' stat* '}'
@@ -85,30 +91,36 @@ stat    : 	expr
 	|	'while' cond stat
 	|	'for' '(' ID '=' expr ('to' | 'downto') expr ')' stat
 	;
+
+
+cond	:	'(' expr ')' ;
+
+
 // Expressoes
 //
 // Niveis precedencia:
-// - Operacoes logicas
-// - Comparacoes
-// - Adicao/sub
-// - Multiplicacao/div
-// - negacao
-expr	:	relExpr (('&&' | '||') relExpr)* ;
+// - Operacoes logicas (expr)
+// - Comparacoes (relExpr)
+// - Adicao/sub (addExpr)
+// - Multiplicacao/div (multExpr)
+// - negacao/parenteses/atribuicoes/fatores unarios (primary)
 
-relExpr :	addExpr (('>' | '<' | '=' | '!=' | '>=' | '<=') addExpr)* ; 
+expr	:	relExpr (('&&' | '||')^ relExpr)* ;
 
-addExpr	:	multExpr (('+' | '-') multExpr)* ;
+relExpr :	addExpr (('>' | '<' | '=' | '!=' | '>=' | '<=')^ addExpr)* ; 
 
-multExpr:	primary (('*' | '/') primary)* ; 
+addExpr	:	multExpr (('+' | '-')^ multExpr)* ;
 
-primary	:	INT -> INT<IntLiteral>
-	|	ID -> ID<Var>
-//	|	ID '=' expr
+multExpr:	primary (('*' | '/')^ primary)* ; 
+
+primary	:	INT
+	|	ID 
+//	|	ID '='^ expr
 	|	'(' expr ')'
-	|	CHAR -> CHAR<CharLiteral>
-	|	STRING -> STRING<StringLiteral>
-	|	'true' -> 'true'<BooleanLiteral>
-	|	'false' -> 'false'<BooleanLiteral>
+	|	CHAR
+	|	STRING
+	|	'true'
+	|	'false'
 	|	'null'
 	;
 	
