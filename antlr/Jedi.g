@@ -1,3 +1,5 @@
+// Gramática principal para análise sintática da linguagem Jedi
+
 grammar Jedi;
 options {output=AST;}
 tokens {PROG; FIELD; PARAM; METHOD;}
@@ -59,23 +61,23 @@ UNICODE_ESC
     ;
 
 // Regras da Gramatica
-prog	 :	classDec+ -> ^(PROG classDec+)  ;
+prog     :	classDec+ -> ^(PROG classDec+)  ;
 
-classDec :	'class' ID '{' classItem* '}' ; 
+classDec :	'class'^ ID '{' classItem* '}' ;
 
 classItem
-	:	field
-	|	method
-	;
-	
+    :	field
+    |	method
+    ;
+
 field	:	type ID ';' -> ^(FIELD type ID) ;
 
 type	:	'int' ;
 
-method	:	 type ID '(' (param (',' param)*)? ')'
-		 '{' stat* '}' -> ^(METHOD type ID param* stat*) ;
+method	:    type ID '(' (param (',' param)*)? ')'
+         '{' stat* '}' -> ^(METHOD type ID param* stat*) ;
 
-param	:	 type ID  -> ^(PARAM type ID) ; 
+param	:    type ID  -> ^(PARAM type ID) ;
 
 
 // Comandos
@@ -85,13 +87,13 @@ param	:	 type ID  -> ^(PARAM type ID) ;
 // - Comando condicional (if-then-else)
 // - for e while
 
-stat    : 	expr ';'!
-	|	'{' stat* '}'
-	|	'if' cond stat ('else' stat)?
-	|	'while' cond stat
-	|	'for' '(' ID '=' expr ('to' | 'downto') expr ')' stat
-    | ';'!                     // comando vazio 
-	;
+stat    :   expr ';'!
+    |	'{' stat* '}'
+    |	'if' cond stat ('else' stat)?
+    |	'while' cond stat
+    |	'for' '(' ID '=' expr ('to' | 'downto') expr ')' stat
+    | ';'!                     // comando vazio
+    ;
 
 
 cond	:	'(' expr ')' ;
@@ -108,20 +110,19 @@ cond	:	'(' expr ')' ;
 
 expr	:	relExpr (('&&' | '||')^ relExpr)* ;
 
-relExpr :	addExpr (('>' | '<' | '=' | '!=' | '>=' | '<=')^ addExpr)* ; 
+relExpr :	addExpr (('>' | '<' | '==' | '!=' | '>=' | '<=')^ addExpr)* ;
 
 addExpr	:	multExpr (('+' | '-')^ multExpr)* ;
 
-multExpr:	primary (('*' | '/')^ primary)* ; 
+multExpr:	primary (('*' | '/')^ primary)* ;
 
 primary	:	INT
-	|	ID 
-//	|	ID '='^ expr
-	|	'(' expr ')'
-	|	CHAR
-	|	STRING
-	|	'true'
-	|	'false'
-	|	'null'
-	;
-	
+    |	ID
+    |	ID '='^ expr
+    |	'(' expr ')'
+    |	CHAR
+    |	STRING
+    |	'true'
+    |	'false'
+    |	'null'
+    ;
